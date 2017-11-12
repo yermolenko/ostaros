@@ -1,0 +1,6 @@
+Main Todo Items
+===============
+
+* GPT partitioning and UEFI support
+* Support for distros that are not debian-based
+* Make more dependencies optional
