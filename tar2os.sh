@@ -2,7 +2,7 @@
 #
 #  tar2os - installing preconfigured linux instance from tar image
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021 Alexander Yermolenko
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022 Alexander Yermolenko
 #  <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -598,6 +598,8 @@ ROOT_UUID=$( blkid -s UUID -o value $PARTROOT )
 [ ! -z "$ROOT_UUID" -a "$ROOT_UUID" != " " ] || die "Can't get ROOT UUID"
 
 CONF_FILE=/mnt/fsroot/etc/initramfs-tools/conf.d/resume
+[ -f "$CONF_FILE" ] || \
+    echo "RESUME=UUID=xyz" > "$CONF_FILE"
 sed -i "s/UUID=.*/UUID=$SWAP_UUID/g" $CONF_FILE \
     || die "resume partition info update failed"
 
