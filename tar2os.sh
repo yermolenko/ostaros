@@ -259,7 +259,7 @@ fi
 # Select image
 
 echo "Found images:"
-images=({/livemnt/boot/,/mnt/flash/,/mnt/,/mnt/r/mnt/flash/}{tarred/,.clones/tarred/}*)
+images=({/livemnt/boot/,/run/archiso/bootmnt/,/mnt/flash/,/mnt/,/mnt/r/mnt/flash/}{tarred/,.clones/tarred/}*)
 echo "${images[@]}"
 
 while true
