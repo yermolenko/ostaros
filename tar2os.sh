@@ -2,7 +2,7 @@
 #
 #  tar2os - installing preconfigured linux instance from tar image
 #
-#  Copyright (C) 2014, 2015, 2016, 2017 Alexander Yermolenko
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021 Alexander Yermolenko
 #  <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -602,6 +602,8 @@ sed -i "s/UUID=.*/UUID=$SWAP_UUID/g" $CONF_FILE \
     || die "resume partition info update failed"
 
 CONF_FILE=/mnt/fsroot/etc/fstab
+[ -f "$CONF_FILE" ] \
+    || die "Target fstab does not exist"
 sed -i "s/UUID=.* none /UUID=$SWAP_UUID none /g" $CONF_FILE \
     || die "swap partition info update failed"
 
