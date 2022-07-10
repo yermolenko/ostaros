@@ -604,6 +604,8 @@ sed -i "s/UUID=.*/UUID=$SWAP_UUID/g" $CONF_FILE \
 CONF_FILE=/mnt/fsroot/etc/fstab
 [ -f "$CONF_FILE" ] \
     || die "Target fstab does not exist"
+grep -q 'UUID=.*[[:blank:]]\+none[[:blank:]]\+swap' "$CONF_FILE" \
+    || echo "UUID=xyz none            swap    sw              0       0" >> "$CONF_FILE"
 sed -i "s/UUID=.* none /UUID=$SWAP_UUID none /g" $CONF_FILE \
     || die "swap partition info update failed"
 
