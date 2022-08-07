@@ -34,6 +34,7 @@ mount $dev \"/mnt/zzz$name\" -o ro && \
 cd \"/mnt/zzz$name\" && \
 echo \"$excluded\" | \
 tar --create --file - \
+--exclude-backups \
 --exclude-from=- \
 --use-compress-program gzip --one-file-system --preserve-permissions --numeric-owner \
 ./" \
@@ -70,6 +71,8 @@ read -d '' excluded <<"EOF"
 ./lost\+found
 ./media/*
 ./var/cache/apt/archives/*
+./var/lib/snapd/cache/*
+./var/log/journal/*
 EOF
 part2tar
 
