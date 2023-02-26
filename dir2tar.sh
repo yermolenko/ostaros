@@ -2,7 +2,7 @@
 #
 #  dir2tar - creating an image of local directory
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022 Alexander
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023 Alexander
 #  Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -159,6 +159,14 @@ list_files_with_caps()
 
     rm_if_empty "$outputfile-stderr"
 }
+
+[ -d "$dir" ] || die "Directory \"$dir\" does not exist"
+dir="$( cd "$dir" && pwd )"
+[ -d "$dir" ] || die "Directory \"$dir\" does not exist"
+[ "x$dir" == "x$outputdir" ] && die "\"$dir\" and output directory are the same"
+echo "dir: $dir"
+echo "outputdir: $outputdir"
+echo "id: $id"
 
 require_root
 
