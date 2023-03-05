@@ -6,6 +6,9 @@ id=${2:?image id is required}
 # id=nspawn-debian-9
 
 read -d '' excluded <<"EOF"
+*~
+~$*
+~WRL*.tmp
 ./lost\+found
 ./media/*
 ./var/cache/apt/archives/*
@@ -20,10 +23,21 @@ read -d '' excluded <<"EOF"
 ./var/www/*
 ./root/c11n
 ./root/yar-data
-./home/*/.cache
+./home-in-root
+./home_in_root
+./home/*/.cache*
+./home/*/_cache*
+./home/*/.local/share/Trash
 ./home/*/.trash*
 ./home/*/_trash*
+./home/*/.backup*
+./home/*/backup*
+./home/*/.яяbackup*
+./home/*/яяbackup*
+./home/*/.bak
+./home/*/bak
 ./home/*/.thumbnails
+./home/*/.config/gsmartcontrol
 ./home/*/.config/smplayer/file_settings
 ./home/*/.kde/share/apps/okular/docdata
 ./home/*/.local/share/meld
@@ -51,18 +65,26 @@ read -d '' excluded <<"EOF"
 ./home/*/Музыка/*
 ./home/*/Общедоступные/*
 ./home/*/Шаблоны/*
+./home/*/Личное
+./home/*/личное
+./home/*/Личная
+./home/*/личная
 ./home/*/work
 ./home/*/distrib
 ./home/*/p
 ./home/*/d
 ./home/*/vms
+./home/*/VirtualBox\ VMs
 ./home/*/nspawn*
+./home/*/snap
 ./home/*/apps/archive/
+./home/*/.ssh*
+./home/*/.recoll*
 ./home/*/.stardict
 ./home/*/.goldendict
-./home/*/.icedove
-./home/*/.thunderbird
-./home/*/.mozilla
+./home/*/.icedove*
+./home/*/.thunderbird*
+./home/*/.mozilla*
 EOF
 
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

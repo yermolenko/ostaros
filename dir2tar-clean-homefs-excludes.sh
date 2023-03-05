@@ -6,15 +6,32 @@ id=${2:?image id is required}
 # id=homes
 
 read -d '' excluded <<"EOF"
+*~
+~$*
+~WRL*.tmp
 ./lost\+found
-./*/.cache
+./*/.cache*
+./*/_cache*
+./*/.local/share/Trash
 ./*/.trash*
 ./*/_trash*
+./*/.backup*
+./*/backup*
+./*/.яяbackup*
+./*/яяbackup*
+./*/.bak
+./*/bak
 ./*/.thumbnails
+./*/.config/gsmartcontrol
 ./*/.config/smplayer/file_settings
 ./*/.kde/share/apps/okular/docdata
 ./*/.local/share/meld
 ./*/.nv
+./*/.dropbox*
+./*/Dropbox
+./*/.yandex
+./*/.config/yandex-disk
+./*/Yandex.Disk
 ./*/.config/syncthing
 ./*/Sync
 ./*/things*
@@ -33,18 +50,26 @@ read -d '' excluded <<"EOF"
 ./*/Музыка/*
 ./*/Общедоступные/*
 ./*/Шаблоны/*
+./*/Личное
+./*/личное
+./*/Личная
+./*/личная
 ./*/work
 ./*/distrib
 ./*/p
 ./*/d
 ./*/vms
+./*/VirtualBox\ VMs
 ./*/nspawn*
+./*/snap
 ./*/apps/archive/
+./*/.ssh*
+./*/.recoll*
 ./*/.stardict
 ./*/.goldendict
-./*/.icedove
-./*/.thunderbird
-./*/.mozilla
+./*/.icedove*
+./*/.thunderbird*
+./*/.mozilla*
 EOF
 
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
