@@ -208,13 +208,16 @@ firefox_proxy_setup()
 
 restore_file_capabilities()
 {
-    GETCAP_OUTPUT="$1"
-    FS_PREFIX="$2"
+    local GETCAP_OUTPUT="$1"
+    local FS_PREFIX="$2"
 
     [ -f "$GETCAP_OUTPUT" ] || die "Cannot find file capabilities info: $GETCAP_OUTPUT"
+    [ -d "$FS_PREFIX" ] || die "Target directory does not exist: $FS_PREFIX"
 
-    files=()
-    caps=()
+    echo "Restoring file capabilities from $GETCAP_OUTPUT inside $FS_PREFIX"
+
+    local files=()
+    local caps=()
     while IFS='=' read -ra fields; do
         [ ${#fields[@]} -eq 2 ] || die "Wrong format of file capabilities info."
         files+=(${fields[0]})
