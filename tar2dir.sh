@@ -2,7 +2,7 @@
 #
 #  tar2dir - restoring local directory from tar image
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022 Alexander
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023 Alexander
 #  Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -49,27 +49,29 @@ require_root()
 
 restore_file_capabilities()
 {
-    local GETCAP_OUTPUT="$1"
-    local FS_PREFIX="$2"
+    local getcap_output=${1:?"getcap output filename is required"}
+    local fs_prefix=${2:?"fs prefix is required"}
 
-    [ -f "$GETCAP_OUTPUT" ] || die "Cannot find file capabilities info: $GETCAP_OUTPUT"
-    [ -d "$FS_PREFIX" ] || die "Target directory does not exist: $FS_PREFIX"
+    [ -f "$getcap_output" ] || die "Cannot find file capabilities info: $getcap_output"
+    [ -d "$fs_prefix" ] || die "Target directory does not exist: $fs_prefix"
 
-    echo "Restoring file capabilities from $GETCAP_OUTPUT inside $FS_PREFIX"
+    echo "Restoring file capabilities from $getcap_output inside $fs_prefix"
 
     local files=()
-    local caps=()
-    while IFS='=' read -ra fields; do
-        [ ${#fields[@]} -eq 2 ] || die "Wrong format of file capabilities info."
-        files+=(${fields[0]})
-        caps+=(${fields[1]})
-    done < "$GETCAP_OUTPUT"
+    local cap_sets=()
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        local file="${line%%[[:blank:]]*}"
+        local cap_set="${line#*[[:blank:]]}"
+        [[ -z "${cap_set// }" ]] && die "Capabilities info for file \"$file\" is empty"
+        files+=("${file}")
+        cap_sets+=("${cap_set}")
+    done < "$getcap_output"
 
     for index in "${!files[@]}"; do
-        file="${files[$index]}"
-        file_caps="${caps[$index]}"
-        echo "Setting '$file_caps' on '$FS_PREFIX/$file'"
-        setcap "$file_caps" "$FS_PREFIX/$file" || die "Cannot set capabilities on $FS_PREFIX/$file"
+        local file="${files[$index]}"
+        local cap_set="${cap_sets[$index]}"
+        echo "Setting '$cap_set' on '$fs_prefix/$file'"
+        setcap "$cap_set" "$fs_prefix/$file" || die "Cannot set capabilities on $fs_prefix/$file"
     done
 }
 
