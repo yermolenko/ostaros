@@ -103,6 +103,9 @@ shopt -s nullglob
 SEPARATE_HOME=1
 BTRFS=0
 
+EXTRA_MKFS_EXT4_OPTIONS=()
+# EXTRA_MKFS_EXT4_OPTIONS+=( -O ^metadata_csum )
+
 ENABLE_PROXY=0
 PROXY_STRING="http://user:password@10.0.2.1:8080/"
 PROXY_STRING="http://10.0.2.1:8080/"
@@ -548,7 +551,7 @@ if [ $BTRFS -eq 1 ]
 then
     mkfs.btrfs -f -L uburoot $PARTROOT || die "format root failed"
 else
-    mkfs.ext4 -L uburoot $PARTROOT || die "format root failed"
+    mkfs.ext4 "${EXTRA_MKFS_EXT4_OPTIONS[@]}" -L uburoot $PARTROOT || die "format root failed"
 fi
 
 mkdir /mnt/fsroot || die "fsroot mount point creation failed"
@@ -574,7 +577,7 @@ pv --force "$IMGDIR/fs_root.tar.gz" | \
 
 if [ $SEPARATE_HOME -eq 1 ]
 then
-    mkfs.ext4 -L ubuhome $PARTHOME || die "format home failed"
+    mkfs.ext4 "${EXTRA_MKFS_EXT4_OPTIONS[@]}" -L ubuhome $PARTHOME || die "format home failed"
     mount $PARTHOME /mnt/fsroot/home || die "fshome mount failed"
 fi
 
