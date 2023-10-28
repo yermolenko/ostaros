@@ -62,7 +62,7 @@ read -d '' excluded <<"EOF"
 ./*/VirtualBox\ VMs
 ./*/nspawn*
 ./*/snap
-./*/apps/archive/
+./*/apps/archive
 ./*/.ssh*
 ./*/.recoll*
 ./*/.stardict
