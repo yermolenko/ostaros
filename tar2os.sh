@@ -320,7 +320,7 @@ partprobe
 # Select device
 
 echo "Found devices:"
-devices=(/dev/sd[abcdef])
+devices=(/dev/sd[a-z])
 echo "${devices[@]}"
 
 if [ ! ${#devices[@]} -eq 1 ]
