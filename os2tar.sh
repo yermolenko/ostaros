@@ -2,7 +2,7 @@
 #
 #  os2tar - creating an image of GNU/Linux installation, a template
 #
-#  Copyright (C) 2014, 2015, 2016, 2017 Alexander Yermolenko
+#  Copyright (C) 2014, 2015, 2016, 2017, 2023 Alexander Yermolenko
 #  <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -69,6 +69,7 @@ dev=/dev/sda1
 name=root
 read -d '' excluded <<"EOF"
 ./lost\+found
+./swapfile
 ./media/*
 ./var/cache/apt/archives/*
 ./var/lib/snapd/cache/*

@@ -10,6 +10,7 @@ read -d '' excluded <<"EOF"
 ~$*
 ~WRL*.tmp
 ./lost\+found
+./swapfile
 ./media/*
 ./var/cache/apt/archives/*
 ./var/lib/snapd/cache/*
