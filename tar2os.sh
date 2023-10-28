@@ -100,6 +100,8 @@ get_ram_size()
 
 shopt -s nullglob
 
+INSTALL_TAG=ubu
+
 SEPARATE_HOME=1
 BTRFS=0
 
@@ -253,6 +255,15 @@ whiptail \
     --msgbox \
     "Press OK (Enter) to start installation.\n\nНажмите ОК (Enter) для начала установки." \
     25 80
+
+INSTALL_TAG=$( whiptail \
+                   --title "Installation tag selection" \
+                   --inputbox "Provide a short installation \"label\" for the system\n\nЗадайте короткую \"метку\" для системы\n\n[a-z0-9]*\n\nExample: ubu2204" \
+                   25 80 \
+                   "$INSTALL_TAG" \
+                   3>&1 1>&2 2>&3 )
+
+echo "INSTALL_TAG: $INSTALL_TAG"
 
 whiptail \
     --title "Proxy setup" \
@@ -549,9 +560,9 @@ swapon $PARTSWAP || die "turning swap on failed"
 
 if [ $BTRFS -eq 1 ]
 then
-    mkfs.btrfs -f -L uburoot $PARTROOT || die "format root failed"
+    mkfs.btrfs -f -L "$INSTALL_TAG"root $PARTROOT || die "format root failed"
 else
-    mkfs.ext4 "${EXTRA_MKFS_EXT4_OPTIONS[@]}" -L uburoot $PARTROOT || die "format root failed"
+    mkfs.ext4 "${EXTRA_MKFS_EXT4_OPTIONS[@]}" -L "$INSTALL_TAG"root $PARTROOT || die "format root failed"
 fi
 
 mkdir /mnt/fsroot || die "fsroot mount point creation failed"
@@ -577,7 +588,7 @@ pv --force "$IMGDIR/fs_root.tar.gz" | \
 
 if [ $SEPARATE_HOME -eq 1 ]
 then
-    mkfs.ext4 "${EXTRA_MKFS_EXT4_OPTIONS[@]}" -L ubuhome $PARTHOME || die "format home failed"
+    mkfs.ext4 "${EXTRA_MKFS_EXT4_OPTIONS[@]}" -L "$INSTALL_TAG"home $PARTHOME || die "format home failed"
     mount $PARTHOME /mnt/fsroot/home || die "fshome mount failed"
 fi
 
