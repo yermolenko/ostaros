@@ -323,6 +323,16 @@ echo "Found devices:"
 devices=(/dev/sd[a-z])
 echo "${devices[@]}"
 
+if [ ${#devices[@]} -eq 0 ]
+then
+    devices+=( $( whiptail \
+                      --title "Device selection" \
+                      --inputbox "Provide a device to install the system to\n\nВыберите диск, на который будет производиться установка" \
+                      25 80 \
+                      "/dev/sdX" \
+                      3>&1 1>&2 2>&3 ) )
+fi
+
 if [ ! ${#devices[@]} -eq 1 ]
 then
     build_devmenu "${devices[@]}"
