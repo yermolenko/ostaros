@@ -689,6 +689,14 @@ for i in /dev /dev/pts /proc /sys /run; do
     mount -B $i /mnt/fsroot$i || die "mount /mnt/fsroot$i failed"
 done
 
+rm "/mnt/fsroot/etc/machine-id" || modal_warning "Cannot remove old machine-id"
+chroot /mnt/fsroot systemd-machine-id-setup || modal_warning "systemd-machine-id-setup failed"
+if [[ ! -e "/mnt/fsroot/etc/machine-id" ]]; then
+    modal_warning "machine-id has not been created"
+fi
+
+echo "New machine-id created for $droot"
+
 #chroot /mnt/fsroot grub-install $DEVICE || die "grub-install failed"
 
 if [ ! ${#devices[@]} -eq 1 ]
