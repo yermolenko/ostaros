@@ -2,8 +2,8 @@
 #
 #  tar2os - installing preconfigured linux instance from tar image
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023 Alexander
-#  Yermolenko <yaa.mbox@gmail.com>
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023, 2024
+#  Alexander Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
 #  existing GNU/Linux installations and making new installations from
@@ -37,6 +37,33 @@ goodbye()
     whiptail --title "Goodbye!" --msgbox "$msg" 25 80
     echo "INFO: $msg" 1>&2
     exit 1
+}
+
+modal_info()
+{
+    local msg=${1:-"Info message"}
+    whiptail \
+        --title "Info" \
+        --msgbox \
+        "$msg" \
+        25 80
+}
+
+modal_warning()
+{
+    local msg=${1:-"Warning message"}
+    whiptail \
+        --title "WARNING!" \
+        --msgbox \
+        "$msg" \
+        25 80
+}
+
+require()
+{
+    local cmd=${1:?"Command name is required"}
+    shift
+    hash "$cmd" >/dev/null 2>&1 || die "$cmd not found! $@"
 }
 
 whiptail --version || die "whiptail not found"
