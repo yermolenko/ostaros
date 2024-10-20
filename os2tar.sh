@@ -37,7 +37,8 @@ echo \"$excluded\" | \
 tar --create --file - \
 --exclude-backups \
 --exclude-from=- \
---use-compress-program gzip --one-file-system --preserve-permissions --numeric-owner \
+--use-compress-program gzip \
+--one-file-system --preserve-permissions --numeric-owner --sparse \
 ./" \
         > "fs_$name.tar.gz" 2> "fs_$name.stderr" && touch "fs_$name.ok" || \
             { echo "ERROR: tar creation for \"$name\" failed. Exiting"; exit 1; }

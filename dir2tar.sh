@@ -100,7 +100,8 @@ create_tar_image()
         tar --create --file - \
             --exclude-backups \
             --exclude-from=- \
-            --use-compress-program gzip --one-file-system --preserve-permissions --numeric-owner \
+            --use-compress-program gzip \
+            --one-file-system --preserve-permissions --numeric-owner --sparse \
             ./ \
             > "$outputfile" 2> "$outputfile-stderr" && \
         echo "`md5sum "$outputfile" | awk '{ print $1 }'`  $outputfile_without_dirname" >> "$outputdir/$id.md5"
