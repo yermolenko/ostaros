@@ -2,8 +2,8 @@
 #
 #  dir2tar - creating an image of local directory
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023 Alexander
-#  Yermolenko <yaa.mbox@gmail.com>
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023, 2024
+#  Alexander Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
 #  existing GNU/Linux installations and making new installations from
@@ -124,11 +124,11 @@ list_files_with_acls()
     rm_if_empty "$outputfile-stderr"
 }
 
-list_files_with_xattrs()
+list_files_with_e2attrs()
 {
     cd "$dir" || die "Cannot cd to the directory $dir"
 
-    local outputfile_without_dirname="$id.files-with-xattrs"
+    local outputfile_without_dirname="$id.files-with-e2attrs"
     local outputfile="$outputdir/$outputfile_without_dirname"
     [ -e "$outputfile" ] && die "$outputfile already exists"
 
@@ -136,8 +136,8 @@ list_files_with_xattrs()
         find ./ -type f -exec lsattr {} + \
              > /dev/null 2> "$outputfile-stderr"
     cd "$dir" && \
-        find ./ -type f -exec lsattr {} + \
-            | grep -v '\-\-\-\-\-\-\-\-\-\-\-\-\-' \
+        find ./ -type d,p,f,s -exec lsattr -d {} + \
+            | grep -F -v -- '-----------' \
                    > "$outputfile"
     echo "`md5sum "$outputfile" | awk '{ print $1 }'`  $outputfile_without_dirname" >> "$outputdir/$id.md5"
 
@@ -179,5 +179,5 @@ test_outputdir
 
 create_tar_image
 list_files_with_acls
-list_files_with_xattrs
+list_files_with_e2attrs
 list_files_with_caps

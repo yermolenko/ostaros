@@ -53,7 +53,7 @@ getfacl -R -s -p ./ " \
 
     ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 cd \"/mnt/zzz$name\" && \
-find ./ -type f  -iname \"*\" -exec lsattr {} + | grep  -v '\-\-\-\-\-\-\-\-\-\-\-\-\-'" \
+find ./ -type d,p,f,s -exec lsattr -d {} + | grep -F -v -- '-----------'" \
         > "fs_$name.files-with-e2attrs" 2> "fs_$name.files-with-e2attrs.stderr"
 
     rm_if_empty "fs_$name.files-with-e2attrs.stderr"
