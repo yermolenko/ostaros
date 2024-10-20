@@ -2,7 +2,7 @@
 #
 #  os2tar - creating an image of GNU/Linux installation, a template
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2023 Alexander Yermolenko
+#  Copyright (C) 2014, 2015, 2016, 2017, 2023, 2024 Alexander Yermolenko
 #  <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -74,13 +74,23 @@ read -d '' excluded <<"EOF"
 ./var/cache/apt/archives/*
 ./var/lib/snapd/cache/*
 ./var/log/journal/*
+./boot/images/*
+./root/c11n
+./home/*
+./home-in-root
+./home_in_root
 EOF
 part2tar
 
 dev=/dev/sda5
 name=home
 read -d '' excluded <<"EOF"
+*~
+~$*
+~WRL*.tmp
 ./lost\+found
+./*/.cache*
+./*/.thumbnails
 EOF
 part2tar
 
