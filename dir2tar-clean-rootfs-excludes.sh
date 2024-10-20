@@ -74,11 +74,14 @@ read -d '' excluded <<"EOF"
 ./home/*/distrib
 ./home/*/p
 ./home/*/d
+./home/*/shared/*
 ./home/*/vms
 ./home/*/VirtualBox\ VMs
 ./home/*/nspawn*
 ./home/*/snap
 ./home/*/apps/archive
+./home/*/apps/firefox
+./home/*/apps/thunderbird
 ./home/*/.ssh*
 ./home/*/.recoll*
 ./home/*/.stardict
@@ -86,6 +89,7 @@ read -d '' excluded <<"EOF"
 ./home/*/.icedove*
 ./home/*/.thunderbird*
 ./home/*/.mozilla*
+./home/*/*.png
 EOF
 
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
