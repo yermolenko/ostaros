@@ -118,7 +118,7 @@ list_files_with_acls()
     [ -e "$outputfile" ] && die "$outputfile already exists"
 
     cd "$dir" && \
-        getfacl -R -s -p ./ \
+        getfacl -R -s -p -n ./ \
                 > "$outputfile" 2> "$outputfile-stderr" && \
         echo "`md5sum "$outputfile" | awk '{ print $1 }'`  $outputfile_without_dirname" >> "$outputdir/$id.md5"
 

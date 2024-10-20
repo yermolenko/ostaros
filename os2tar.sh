@@ -47,7 +47,7 @@ tar --create --file - \
 
     ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 cd \"/mnt/zzz$name\" && \
-getfacl -R -s -p ./ " \
+getfacl -R -s -p -n ./ " \
         > "fs_$name.files-with-acls" 2> "fs_$name.files-with-acls.stderr"
 
     rm_if_empty "fs_$name.files-with-acls.stderr"
