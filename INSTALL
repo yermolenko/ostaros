@@ -8,7 +8,7 @@ OSTAROS consists of two bash scripts:
   * os2tar.sh - creating an image of existing OS installation
   * tar2os.sh - making a new OS installation from an existing image
 
-Running them was tested on SystemRescueCd versions from 4.2.0 to 4.8.3
+Running them was tested on SystemRescueCd versions from 4.2.0 to 11.02
 <http://www.system-rescue-cd.org/>, though they should work on most
 GNU/Linux live CDs with appropriate system tools included.
 
@@ -22,11 +22,10 @@ Noteworthy dependencies of the installer script are:
 
 Current installer script limitations:
   * only MBR partitioning is supported
-  * only Ubuntu 12.04, 14.04, 16.04 and derivatives are supported
-  * making installations of Debian GNU/Linux 7, 8 and 9 should work
-    but it was not tested extensively
-  * image can be prepared from OS installation with separate root,
-    home and swap partitions
+  * only Ubuntu versions from 12.04 to 24.04 and their derivatives are
+    supported
+  * making installations of Debian GNU/Linux 7+ should work but it was
+    not tested extensively
 
 Noteworthy dependencies of the image creation script are:
   * tar
