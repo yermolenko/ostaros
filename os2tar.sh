@@ -23,14 +23,15 @@
 #  along with OSTAROS.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-EXTRA_SSH_OPTIONS=""
-EXTRA_SSH_OPTIONS=",Cipher=arcfour"
-
 part2tar()
 {
-    ssh -o UserKnownHostsFile=\"$tmp_known_hosts\"$EXTRA_SSH_OPTIONS "root@$host" "\
+    ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
+test -e \"/mnt/zzz$name\"" && \
+        { echo "ERROR: \"/mnt/zzz$name\" exists on the remote host. Exiting"; exit 1; }
+
+    ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 mkdir \"/mnt/zzz$name\" && \
-mount $dev \"/mnt/zzz$name\" -o ro && \
+mount ${extra_mount_options[*]} $dev \"/mnt/zzz$name\" -o ro && \
 cd \"/mnt/zzz$name\" && \
 echo \"$excluded\" | \
 tar --create --file - \
@@ -38,35 +39,60 @@ tar --create --file - \
 --exclude-from=- \
 --use-compress-program gzip --one-file-system --preserve-permissions --numeric-owner \
 ./" \
-        > "fs_$name.tar.gz" 2> "fs_$name.stderr.txt" && touch "fs_$name.ok"
+        > "fs_$name.tar.gz" 2> "fs_$name.stderr" && touch "fs_$name.ok" || \
+            { echo "ERROR: tar creation for \"$name\" failed. Exiting"; exit 1; }
 
-    ssh -o UserKnownHostsFile=\"$tmp_known_hosts\"$EXTRA_SSH_OPTIONS "root@$host" "\
+    rm_if_empty "fs_$name.stderr"
+
+    ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 cd \"/mnt/zzz$name\" && \
 getfacl -R -s -p ./ " \
-        > "fs_$name.files-with-acls"
+        > "fs_$name.files-with-acls" 2> "fs_$name.files-with-acls.stderr"
 
-    ssh -o UserKnownHostsFile=\"$tmp_known_hosts\"$EXTRA_SSH_OPTIONS "root@$host" "\
+    rm_if_empty "fs_$name.files-with-acls.stderr"
+
+    ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 cd \"/mnt/zzz$name\" && \
 find ./ -type f  -iname \"*\" -exec lsattr {} + | grep  -v '\-\-\-\-\-\-\-\-\-\-\-\-\-'" \
-        > "fs_$name.files-with-xattrs"
+        > "fs_$name.files-with-e2attrs" 2> "fs_$name.files-with-e2attrs.stderr"
 
-    ssh -o UserKnownHostsFile=\"$tmp_known_hosts\"$EXTRA_SSH_OPTIONS "root@$host" "\
+    rm_if_empty "fs_$name.files-with-e2attrs.stderr"
+
+    ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 cd \"/mnt/zzz$name\" && \
 getcap -r ./" \
-        > "fs_$name.files-with-caps"
+        > "fs_$name.files-with-caps" 2> "fs_$name.files-with-caps.stderr"
 
-    ssh -o UserKnownHostsFile=\"$tmp_known_hosts\"$EXTRA_SSH_OPTIONS "root@$host" "\
+    rm_if_empty "fs_$name.files-with-caps.stderr"
+}
+
+part2tar_cleanup()
+{
+    ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" "\
 umount \"/mnt/zzz$name\" && \
 rmdir \"/mnt/zzz$name\" "
 }
 
+rm_if_empty()
+{
+    local filename=${1:?filename is required}
+    [[ -s "$filename" ]] || { [[ -f "$filename" ]] && rm "$filename"; }
+}
+
 host=127.0.0.1
 
-tmp_known_hosts=./tmp_known_hosts
-ssh-copy-id -o UserKnownHostsFile=\"$tmp_known_hosts\"$EXTRA_SSH_OPTIONS "root@$host"
+# extra_ssh_options+=(-o Ciphers=arcfour)
+
+tmp_known_hosts="./tmp_known_hosts"
+ssh-copy-id -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host"
+# ssh-copy-id -i "$HOME/hosts/zz-ids/sample_id_rsa" -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host"
+
+ssh -o UserKnownHostsFile="\"$tmp_known_hosts\"" "${extra_ssh_options[@]}" "root@$host" hostname || \
+    { echo "ERROR: cannot ssh to the remote host. Exiting"; exit 1; }
 
 dev=/dev/sda1
 name=root
+extra_mount_options=()
 read -d '' excluded <<"EOF"
 ./lost\+found
 ./swapfile
@@ -81,9 +107,13 @@ read -d '' excluded <<"EOF"
 ./home_in_root
 EOF
 part2tar
+part2tar_cleanup
 
 dev=/dev/sda5
+#dev="/mnt/zzz$name/home"
 name=home
+extra_mount_options=()
+#extra_mount_options+=(--bind)
 read -d '' excluded <<"EOF"
 *~
 ~$*
@@ -93,7 +123,11 @@ read -d '' excluded <<"EOF"
 ./*/.thumbnails
 EOF
 part2tar
+part2tar_cleanup
 
-rm $tmp_known_hosts
+#name=root
+#part2tar_cleanup
+
+rm "$tmp_known_hosts"
 
 md5sum ./* > MD5SUMS
