@@ -629,14 +629,17 @@ then
     mount $PARTHOME /mnt/fsroot/home || die "fshome mount failed"
 fi
 
-echo "Extracting /home contents"
+if [ -f "$IMGDIR/fs_home.tar.gz" ]
+then
+    echo "Extracting /home contents"
 
-pv --force "$IMGDIR/fs_home.tar.gz" | \
-    tar x --numeric-owner \
-    -C /mnt/fsroot/home \
-    -z \
-    -f - \
-    || die "/home unpacking failed"
+    pv --force "$IMGDIR/fs_home.tar.gz" | \
+        tar x --numeric-owner \
+            -C /mnt/fsroot/home \
+            -z \
+            -f - \
+        || die "/home unpacking failed"
+fi
 
 [ -f "$IMGDIR/fs_home.files-with-caps" ] && \
     restore_file_capabilities "$IMGDIR/fs_home.files-with-caps" /mnt/fsroot/home
