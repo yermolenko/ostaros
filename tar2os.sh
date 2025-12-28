@@ -2,7 +2,7 @@
 #
 #  tar2os - installing preconfigured linux instance from tar image
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023, 2024
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023, 2024, 2025
 #  Alexander Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -711,7 +711,8 @@ else
 fi
 
 chroot /mnt/fsroot update-grub || die "update-grub failed"
-chroot /mnt/fsroot update-initramfs -k all -u || die "update-initramfs failed"
+chroot /mnt/fsroot update-initramfs -k all -c || die "update-initramfs failed"
+# chroot /mnt/fsroot update-initramfs -k all -u || die "update-initramfs failed"
 chroot /mnt/fsroot update-grub || die "update-grub failed"
 
 hash dmidecode 2>/dev/null && \
