@@ -2,7 +2,7 @@
 #
 #  dir2tar - creating an image of local directory
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023, 2024
+#  Copyright (C) 2014, 2015, 2016, 2017, 2021, 2022, 2023, 2024, 2025
 #  Alexander Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
@@ -98,6 +98,7 @@ create_tar_image()
 
     echo "$excluded" | \
         tar --create --file - \
+            --no-wildcards-match-slash \
             --exclude-backups \
             --exclude-from=- \
             --use-compress-program gzip \

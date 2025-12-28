@@ -2,8 +2,8 @@
 #
 #  os2tar - creating an image of GNU/Linux installation, a template
 #
-#  Copyright (C) 2014, 2015, 2016, 2017, 2023, 2024 Alexander Yermolenko
-#  <yaa.mbox@gmail.com>
+#  Copyright (C) 2014, 2015, 2016, 2017, 2023, 2024, 2025 Alexander
+#  Yermolenko <yaa.mbox@gmail.com>
 #
 #  This file is part of OSTAROS, a set of tools for creating images of
 #  existing GNU/Linux installations and making new installations from
@@ -35,6 +35,7 @@ mount ${extra_mount_options[*]} $dev \"/mnt/zzz$name\" -o ro && \
 cd \"/mnt/zzz$name\" && \
 echo \"$excluded\" | \
 tar --create --file - \
+--no-wildcards-match-slash \
 --exclude-backups \
 --exclude-from=- \
 --use-compress-program gzip \
